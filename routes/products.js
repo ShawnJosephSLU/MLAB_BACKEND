@@ -3,12 +3,22 @@ const router = express.Router(); // Use express.Router() to create a router
 const checkAuth = require('../middleware/check-auth-admin');
 const multer = require('multer');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
+// Function to create directories recursively
+const createDirectory = (directoryPath) => {
+    if (!fs.existsSync(directoryPath)) {
+        fs.mkdirSync(directoryPath, { recursive: true });
+    }
+};
 
 // WINDOWS
 const windowsInstallerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './.installers/windows/');
+        const destinationPath = './.installers/windows/';
+        createDirectory(destinationPath); // Ensure the directory exists
+        cb(null, destinationPath);
     },
     filename : function (req, file, cb) {
         cb(null, file.originalname);
@@ -16,7 +26,6 @@ const windowsInstallerStorage = multer.diskStorage({
 });
 
 const windowsFileFilter = (req, file, cb) => {
-
     const allowedExecutableExtensions = ['.exe'];
     const isExecutable = allowedExecutableExtensions.some(ext => file.originalname.toLowerCase().endsWith(ext));
 
@@ -29,11 +38,12 @@ const windowsFileFilter = (req, file, cb) => {
 
 const uploadWindowsInstaller = multer({ storage: windowsInstallerStorage, fileFilter: windowsFileFilter });
 
-
-// MACOS -----------------------------------------------------------------------
+// MACOS
 const macOSInstallerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './.installers/macOS/');
+        const destinationPath = './.installers/macOS/';
+        createDirectory(destinationPath); // Ensure the directory exists
+        cb(null, destinationPath);
     },
     filename : function (req, file, cb) {
         cb(null, file.originalname);
@@ -41,7 +51,6 @@ const macOSInstallerStorage = multer.diskStorage({
 });
 
 const macOSFileFilter = (req, file, cb) => {
-
     const allowedExecutableExtensions = ['.dmg'];
     const isExecutable = allowedExecutableExtensions.some(ext => file.originalname.toLowerCase().endsWith(ext));
 
@@ -54,12 +63,12 @@ const macOSFileFilter = (req, file, cb) => {
 
 const uploadMacOSInstaller = multer({ storage: macOSInstallerStorage, fileFilter: macOSFileFilter });
 
-
-
-// adding image to the resources dir
+// Resources
 const imageStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './.installers/resources/');
+        const destinationPath = './.installers/resources/';
+        createDirectory(destinationPath); // Ensure the directory exists
+        cb(null, destinationPath);
     },
     filename : function (req, file, cb) {
         cb(null, file.originalname);
@@ -224,9 +233,6 @@ router.patch('/:productName/installer/macOS', checkAuth, uploadMacOSInstaller.si
         res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
 });
-
-
-
 
 
 module.exports = router;
