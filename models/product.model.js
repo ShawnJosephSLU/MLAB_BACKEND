@@ -8,10 +8,8 @@ const productSchema = mongoose.Schema({
         minor: { type: Number, default: 0 },
         patch: { type: Number, default: 0 }
     },
-    installers: {
-        windows: { type: String, default: "No Windows Installer"},
-        macos: { type: String , default: "No MacOs Installer"},
-    },
+    windowsInstaller: { type: String, default: "No Windows Installer"},
+    macosInstaller: { type: String , default: "No MacOs Installer"},
 
     productImage: {type : String, required: true}
    
