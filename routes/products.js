@@ -24,7 +24,7 @@ const imageFileFilter = (req , file,  cb) => {
     }
 }
 
-const upload = multer({storage: imageStorage , fileFilter: imageFileFilter});
+const uploadImage = multer({storage: imageStorage , fileFilter: imageFileFilter});
 
 
 
@@ -62,7 +62,7 @@ router.get('/:productId', async (req, res, next) => {
 });
 
 // POST a new product (authentication required, admin only)
-router.post('/', checkAuth, upload.single('productImage'), async (req, res, next) => {
+router.post('/', checkAuth, uploadImage.single('productImage'), async (req, res, next) => {
     try {
         // Check if the user is an admin
         if (req.userData.role !== 'admin') {
