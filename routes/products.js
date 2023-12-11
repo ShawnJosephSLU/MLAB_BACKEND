@@ -80,7 +80,8 @@ router.post('/', checkAuth, upload.single('productImage'), async (req, res, next
             name: req.body.name,
             price: req.body.price,
             version: req.body.version,
-            installer: req.body.installer,
+            windowsInstaller: req.file.path,
+            macosInstaller: req.file.path,
             productImage: req.file.path
         });
 
@@ -91,7 +92,5 @@ router.post('/', checkAuth, upload.single('productImage'), async (req, res, next
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-
 
 module.exports = router;
