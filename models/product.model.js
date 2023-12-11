@@ -16,10 +16,6 @@ const productSchema = mongoose.Schema({
    
 }, { versionKey: false });
 
-// Virtual property for version_string
-productSchema.virtual('version_string').get(function() {
-    return `${this.version.major}.${this.version.minor}.${this.version.patch}`;
-});
 
 const Product = mongoose.model('Product', productSchema);
 
