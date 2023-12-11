@@ -5,6 +5,56 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 
 
+// WINDOWS
+const windowsInstallerStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './.installers/windows/');
+    },
+    filename : function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+const windowsFileFilter = (req, file, cb) => {
+
+    const allowedExecutableExtensions = ['.exe'];
+    const isExecutable = allowedExecutableExtensions.some(ext => file.originalname.toLowerCase().endsWith(ext));
+
+    if(isExecutable) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
+
+const uploadWindowsInstaller = multer({ storage: windowsInstallerStorage, fileFilter: windowsFileFilter });
+
+
+// MACOS -----------------------------------------------------------------------
+const macOSInstallerStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './.installers/macOS/');
+    },
+    filename : function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+const macOSFileFilter = (req, file, cb) => {
+
+    const allowedExecutableExtensions = ['.dmg'];
+    const isExecutable = allowedExecutableExtensions.some(ext => file.originalname.toLowerCase().endsWith(ext));
+
+    if(isExecutable) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
+
+const uploadMacOSInstaller = multer({ storage: macOSInstallerStorage, fileFilter: macOSFileFilter });
+
+
 
 // adding image to the resources dir
 const imageStorage = multer.diskStorage({
@@ -95,5 +145,88 @@ router.post('/', checkAuth, async (req, res, next) => {
         res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
 });
+
+// Update an Existing Product's winInstaller by name
+router.patch('/:productName/installer/windows', checkAuth, uploadWindowsInstaller.single('winInstaller'), async (req, res, next) => {
+    try {
+        // Check if the user is an admin
+        if (req.userData.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized. Only admin users can update installers.' });
+        }
+
+        const productName = req.params.productName;
+
+        // Use case-insensitive search to find the product by name
+        const product = await Product.findOne({ name: new RegExp('^' + productName + '$', 'i') });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if a new windowsInstaller file is uploaded
+        if (req.file) {
+
+            // Update the winInstaller field in the product with the file path
+            product.winInstaller = req.file.path;
+
+            // Save the updated product
+            await product.save();
+
+            return res.status(200).json({
+                message: `Windows installer for ${productName} was successfully updated`,
+                product: product,
+            });
+        }
+
+        return res.status(400).json({ message: 'No windows installer file uploaded' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    }
+});
+
+
+// Update an Existing Product's macosInstaller by name
+router.patch('/:productName/installer/macOS', checkAuth, uploadMacOSInstaller.single('macosInstaller'), async (req, res, next) => {
+    try {
+        // Check if the user is an admin
+        if (req.userData.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized. Only admin users can update installers.' });
+        }
+
+        const productName = req.params.productName;
+
+        // Use case-insensitive search to find the product by name
+        const product = await Product.findOne({ name: new RegExp('^' + productName + '$', 'i') });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if a new macosInstaller file is uploaded
+        if (req.file) {
+
+            // Update the macosInstaller field in the product with the file path
+            product.macosInstaller = req.file.path;
+
+            // Save the updated product
+            await product.save();
+
+            return res.status(200).json({
+                message: `MacOS installer for ${productName} was successfully updated`,
+                product: product,
+            });
+        }
+
+        return res.status(400).json({ message: 'No MacOS installer file uploaded' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    }
+});
+
+
+
+
 
 module.exports = router;
