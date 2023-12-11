@@ -26,5 +26,8 @@ package-lock.json
 # Mac OS
 .DS_Store
 
+#installer binaries
+.installers
+
 # Nodemon
 nodemon-debug.log
