@@ -27,7 +27,7 @@ package-lock.json
 .DS_Store
 
 #installer binaries
-.installers
+.installers/
 
 # Nodemon
 nodemon-debug.log
