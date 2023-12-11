@@ -138,9 +138,10 @@ router.post('/', checkAuth, async (req, res, next) => {
         }
 
         // If the product doesn't exist, create a new one
+        const newProductName = req.body.name.replace(/\s+/g, '-'); // Replace spaces with hyphens
         const newProduct = new Product({
             _id: new mongoose.Types.ObjectId(),
-            name: req.body.name,
+            name: newProductName,
             price: req.body.price,
             version: req.body.version,  
             winInstaller: req.body.winInstaller,
@@ -154,6 +155,7 @@ router.post('/', checkAuth, async (req, res, next) => {
         res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
 });
+
 
 // Update an Existing Product's winInstaller by name
 router.patch('/:productName/installer/windows', checkAuth, uploadWindowsInstaller.single('winInstaller'), async (req, res, next) => {
