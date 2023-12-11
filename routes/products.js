@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router(); // Use express.Router() to create a router
 const checkAuth = require('../middleware/check-auth-admin');
 const multer = require('multer');
+const mongoose = require('mongoose');
+
 
 
 // adding image to the resources dir
@@ -62,7 +64,7 @@ router.get('/:productId', async (req, res, next) => {
 });
 
 // POST a new product (authentication required, admin only)
-router.post('/', checkAuth, uploadImage.single('productImage'), async (req, res, next) => {
+router.post('/', checkAuth, async (req, res, next) => {
     try {
         // Check if the user is an admin
         if (req.userData.role !== 'admin') {
@@ -78,19 +80,19 @@ router.post('/', checkAuth, uploadImage.single('productImage'), async (req, res,
 
         // If the product doesn't exist, create a new one
         const newProduct = new Product({
+            _id: new mongoose.Types.ObjectId(),
             name: req.body.name,
             price: req.body.price,
-            version: req.body.version,
-            windowsInstaller: req.file.path,
-            macosInstaller: req.file.path,
-            productImage: req.file.path
+            version: req.body.version,  
+            winInstaller: req.body.winInstaller,
+            macosInstaller: req.body.macosInstaller          
         });
 
         const savedProduct = await newProduct.save();
         res.status(201).json(savedProduct);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
 });
 
