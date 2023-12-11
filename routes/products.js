@@ -5,7 +5,7 @@ const multer = require('multer');
 
 
 // adding image to the resources dir
-const storage = multer.diskStorage({
+const imageStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './.installers/resources/');
     },
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 });
 
 // filter certain types of files 
-const fileFilter = (req , file,  cb) => {
+const imageFileFilter = (req , file,  cb) => {
     if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' ) {
         cb(null, true);
     }
@@ -24,7 +24,8 @@ const fileFilter = (req , file,  cb) => {
     }
 }
 
-const upload = multer({storage: storage , fileFilter: fileFilter});
+const upload = multer({storage: imageStorage , fileFilter: imageFileFilter});
+
 
 
 // Sample Product model
