@@ -315,6 +315,33 @@ router.patch('/:productName/image', checkAuth, uploadImage.single('productImage'
 });
 
 
+// fetch Product's Image by name 
+router.get('/:productName/image', async (req, res, next) => {
+    try {
+        const productName = req.params.productName;
+
+        // Use case-insensitive search to find the product by name
+        const product = await Product.findOne({ name: new RegExp('^' + productName + '$', 'i') });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if the product has an image
+        if (!product.productImage) {
+            return res.status(404).json({ message: 'Product Image not found' });
+        }
+
+        // Send the image file as a response
+        res.sendFile(path.resolve(product.productImage));
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    }
+});
+
+
+
 // get product windows installer
 router.get("/:productName/windows/installer.exe", async (req, res, next) => {
     try {
