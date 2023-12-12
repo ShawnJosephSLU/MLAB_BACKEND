@@ -34,12 +34,17 @@ app.use((req, res, next)=>{
 
 
 //Routes
+
+// Root route
+app.get('/', (req, res) => {
+    res.status(200).send('Welcome to MLAB SERVICES');
+});
+
 const userRoutes = require('./routes/users');
 app.use('/user', userRoutes);
 
 const adminRoutes = require('./routes/admin');
 app.use('/admin', adminRoutes);
-
 
 
 const productRoutes = require('./routes/products');
