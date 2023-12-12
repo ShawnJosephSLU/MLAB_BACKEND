@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://mlabdeveloperslu:OQ2j7VdiCAaArtwT@cluster0.w3vquey.mongodb.net/MLAB_DB', {});
+mongoose.connect(process.env.MONGO_CONN_URL, {});
 
 //CORS Error Handling 
 app.use((req, res, next)=>{
