@@ -76,14 +76,18 @@ const imageStorage = multer.diskStorage({
 });
 
 // filter certain types of files 
-const imageFileFilter = (req , file,  cb) => {
-    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' ) {
+const imageFileFilter = (req, file, cb) => {
+    if (
+        file.mimetype === 'image/jpeg' ||
+        file.mimetype === 'image/png' ||
+        file.mimetype === 'image/svg+xml' 
+    ) {
         cb(null, true);
-    }
-    else {
+    } else {
         cb(null, false);
     }
-}
+};
+
 
 const uploadImage = multer({storage: imageStorage , fileFilter: imageFileFilter});
 
