@@ -3,5 +3,5 @@
       "MONGO_CONN_URL" : "mongodb+srv://mlabdeveloperslu:OQ2j7VdiCAaArtwT@cluster0.w3vquey.mongodb.net/MLAB_DB",
       "JWT_SECRET_KEY": "SbKborE6zfhG03kDtyJ6QEjEZoyEVi43v49iANLeVJwutsMn4OZIFkN6GwsbzZN3nJYdbODpnq5JRxmvl3jsoQ"
     }
-  }
+}
   
