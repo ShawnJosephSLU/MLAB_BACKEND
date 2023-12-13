@@ -14,9 +14,7 @@ exports.loginUser = async (req, res, next) => {
         // Find the user in the database
         const user = await User.findOne({ username: req.body.username });
 
-        // Log user details
-        console.log("User:", user);
-
+        
         // Check if the user exists
         if (!user) {
             return res.status(401).json({
