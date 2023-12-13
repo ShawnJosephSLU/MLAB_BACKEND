@@ -1,12 +1,12 @@
 const User = require('../models/user.model');
-const tokenBlacklist = [];
+const userTokenBlacklist = [];
 
 exports.getUserProducts = async (req, res, next) => {
     try {
         const token = req.headers.authorization.split(" ")[1];
 
         // Check if the token is blacklisted
-        if (tokenBlacklist.includes(token)) {
+        if (userTokenBlacklist.includes(token)) {
             return res.status(401).json({
                 error: "Authentication failed. Token is blacklisted."
             });
