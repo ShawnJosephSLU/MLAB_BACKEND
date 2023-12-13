@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
-
+const dbConnect = require('./config/dbConnect');
 
 // Request Logging
 const morgan = require('morgan');
@@ -13,8 +13,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_CONN_URL, {});
+dbConnect(); //connect to database
 
 //CORS Error Handling 
 app.use((req, res, next)=>{
