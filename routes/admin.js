@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const checkAuth = require('../middleware/check-auth-admin');
-const adminController = require('../controllers/admin.controller');
-const adminAuthController = require('../controllers/admin-auth.controller');
+const adminController = require('../controllers/clients/admin.controller');
+const adminAuthController = require('../controllers/authentication/admin-auth.controller');
 
 
 // Admin registration

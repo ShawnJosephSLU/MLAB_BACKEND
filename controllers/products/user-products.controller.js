@@ -1,4 +1,4 @@
-const User = require('../models/user.model');
+const User = require('../../models/user.model');
 const userTokenBlacklist = [];
 
 exports.getUserProducts = async (req, res, next) => {

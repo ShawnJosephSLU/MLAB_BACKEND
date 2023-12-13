@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const Admin = require('../models/admin.model');
+const Admin = require('../../models/admin.model');
 
 exports.registerAdmin = async (req, res, next) => {
     try {
