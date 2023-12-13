@@ -13,17 +13,16 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-dbConnect(); //connect to database
+//connect to database
+dbConnect(); 
 
 //CORS Error Handling 
 const corsHandler = require('./middleware/cors-handler');
 app.use(corsHandler);
 
 //Routes
-
-// Root route
 app.get('/', (req, res) => {
-    res.status(200).send('Welcome to MLAB SERVICES API');
+    res.status(200).send('Welcome to MLAB SERVICES API'); // Root route
 });
 
 const userRoutes = require('./routes/users');
