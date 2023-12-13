@@ -16,21 +16,8 @@ app.use(bodyParser.json());
 dbConnect(); //connect to database
 
 //CORS Error Handling 
-app.use((req, res, next)=>{
-
-    res.header('Access-Control-Allow-Origin',  '*');
-    res.header(
-         'Access-Control-Allow-Headers', 
-         'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-    );
-
-    if(req.methods === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE ');
-    return res.status(200).json({}) // empty json object
-    }
-    next();
-});
-
+const corsHandler = require('./middleware/cors-handler');
+app.use(corsHandler);
 
 //Routes
 
@@ -47,10 +34,11 @@ app.use('/admin', adminRoutes);
 
 
 const productRoutes = require('./routes/products');
-const { notFound, errorHandler } = require('./middleware/error-handler');
+
 app.use('/products', productRoutes);
 
 // error handling
+const { notFound, errorHandler } = require('./middleware/error-handler');
 app.use(notFound);
 app.use(errorHandler); 
 
