@@ -1,5 +1,6 @@
 const Product = require('../../models/product.model');
 mongoose = require("mongoose");
+const path = require('path');
 
 
 exports.getAllProducts = async (req, res, next) => {
@@ -215,3 +216,28 @@ exports.updateImage = async (req, res, next) => {
         res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
 }
+
+exports.fetchProductImg = async (req, res, next) => {
+    try {
+        const productName = req.params.productName;
+
+        // Use case-insensitive search to find the product by name
+        const product = await Product.findOne({ name: new RegExp('^' + productName + '$', 'i') });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if the product has an image
+        if (!product.productImage) {
+            return res.status(404).json({ message: 'Product Image not found' });
+        }
+
+        // Send the image file as a response
+        res.sendFile(path.resolve(product.productImage));
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    }
+}
+
