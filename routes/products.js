@@ -5,6 +5,7 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
+const productController = require("../controllers/products/products.controller");
 
 // Function to create directories recursively
 const createDirectory = (directoryPath) => {
@@ -96,15 +97,7 @@ const uploadImage = multer({storage: imageStorage , fileFilter: imageFileFilter}
 const Product = require('../models/product.model');
 
 // GET all products
-router.get('/', async (req, res, next) => {
-    try {
-        const products = await Product.find();
-        res.status(200).json(products);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});
+router.get('/', productController.getAllProducts);
 
 // GET a specific product by name
 router.get('/:productName', async (req, res, next) => {
