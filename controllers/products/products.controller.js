@@ -288,3 +288,26 @@ exports.fetchProductMacOSInstaller = async (req, res, next) => {
         res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
 }
+
+exports.deleteProductByName = async (req, res, next) => {
+    try {
+        // Check if the user is an admin
+        if (req.userData.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized. Only admin users can delete products.' });
+        }
+
+        const productName = req.params.productName;
+
+        // Use case-insensitive search to find and delete the product by name
+        const deletedProduct = await Product.findOneAndDelete({ name: new RegExp('^' + productName + '$', 'i') });
+
+        if (!deletedProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.status(200).json({ message: `Product '${productName}' was successfully deleted` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    }
+};

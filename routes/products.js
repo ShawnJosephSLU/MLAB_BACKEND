@@ -125,6 +125,9 @@ router.get("/:productName/windows/:installer", productController.fetchProductWin
 // get product macOS installer
 router.get("/:productName/macos/installer.dmg", productController.fetchProductMacOSInstaller);
 
+//delete a product
+router.delete("/:productName", checkAuth, productController.deleteProductByName);
+
 
 module.exports = router;
 
