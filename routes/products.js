@@ -116,42 +116,7 @@ router.patch('/:productName/installer/macOS', checkAuth, uploadMacOSInstaller.si
 
 
 // Update an Existing Product's price by name
-router.patch('/:productName/price', checkAuth, async (req, res, next) => {
-    try {
-        // Check if the user is an admin
-        if (req.userData.role !== 'admin') {
-            return res.status(403).json({ error: 'Unauthorized. Only admin users can update product price.' });
-        }
-
-        const productName = req.params.productName;
-
-        // Use case-insensitive search to find the product by name
-        const product = await Product.findOne({ name: new RegExp('^' + productName + '$', 'i') });
-
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
-        // Check if a new price is provided in the request body
-        if (req.body.price === undefined) {
-            return res.status(400).json({ error: 'Price not provided in the request body' });
-        }
-
-        // Update the price field in the product
-        product.price = req.body.price;
-
-        // Save the updated product
-        await product.save();
-
-        return res.status(200).json({
-            message: `Price for product ${productName} was successfully updated`,
-            product: product,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error', message: error.message });
-    }
-});
+router.patch('/:productName/price', checkAuth, productController.updatePrice);
 
 
 // Update an Existing Product's Image by name 
