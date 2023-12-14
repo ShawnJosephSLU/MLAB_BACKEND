@@ -177,3 +177,41 @@ exports.updatePrice = async (req, res, next) => {
         res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
 }
+
+exports.updateImage = async (req, res, next) => {
+    try {
+        // Check if the user is an admin
+        if (req.userData.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized. Only admin users can update A Product Image.' });
+        }
+
+        const productName = req.params.productName;
+
+        // Use case-insensitive search to find the product by name
+        const product = await Product.findOne({ name: new RegExp('^' + productName + '$', 'i') });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if a new macosInstaller file is uploaded
+        if (req.file) {
+
+            // Update the product image field in the product with the file path
+            product.productImage = req.file.path;
+
+            // Save the updated product
+            await product.save();
+
+            return res.status(200).json({
+                message: `Product Image for ${productName} was successfully updated`,
+                product: product,
+            });
+        }
+
+        return res.status(400).json({ message: 'No Product Image  file uploaded' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    }
+}
