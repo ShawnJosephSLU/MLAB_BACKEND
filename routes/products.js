@@ -92,7 +92,6 @@ const imageFileFilter = (req, file, cb) => {
 
 const uploadImage = multer({storage: imageStorage , fileFilter: imageFileFilter});
 
-
 // Sample Product model
 const Product = require('../models/product.model');
 
@@ -102,81 +101,29 @@ router.get('/', productController.getAllProducts);
 // GET a specific product by name
 router.get('/:productName', productController.getProductByName);
 
-
 // POST a new product (authentication required, admin only)
 router.post('/', checkAuth, productController.createNewProduct);
-
 
 // Update an Existing Product's winInstaller by name
 router.patch('/:productName/installer/windows', checkAuth, uploadWindowsInstaller.single('winInstaller'),  productController.updateWindowsInstaller);
 
-
 // Update an Existing Product's macosInstaller by name
 router.patch('/:productName/installer/macOS', checkAuth, uploadMacOSInstaller.single('macosInstaller'), productController.updateMacOSInstaller);
-
 
 // Update an Existing Product's price by name
 router.patch('/:productName/price', checkAuth, productController.updatePrice);
 
-
 // Update an Existing Product's Image by name 
 router.patch('/:productName/image', checkAuth, uploadImage.single('productImage'), productController.updateImage);
-
 
 // fetch Product's Image by name 
 router.get('/:productName/image', productController.fetchProductImg);
 
-
-
 // get product windows installer
-router.get("/:productName/windows/installer.exe", async (req, res, next) => {
-    try {
-        const productName = req.params.productName;
-
-        // Use case-insensitive search to find the product by name
-        const product = await Product.findOne({ name: new RegExp('^' + productName + '$', 'i') });
-
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
-        // Check if the product has a Windows installer file
-        if (!product.winInstaller) {
-            return res.status(404).json({ message: 'Windows installer not found for this product' });
-        }
-
-        // Send the Windows installer file as a response
-        res.sendFile(path.resolve(product.winInstaller));
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error', message: error.message });
-    }
-});
+router.get("/:productName/windows/:installer", productController.fetchProductWindowsInstaller);
 
 // get product macOS installer
-router.get("/:productName/macos/installer.dmg", async (req, res, next) => {
-    try {
-        const productName = req.params.productName;
-
-        // Use case-insensitive search to find the product by name
-        const product = await Product.findOne({ name: new RegExp('^' + productName + '$', 'i') });
-
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
-        // Check if the product has a macOS installer file
-        if (!product.macosInstaller) {
-            return res.status(404).json({ message: 'macOS installer not found for this product' });
-        }
-
-        // Send the macOS installer file as a response
-        res.sendFile(path.resolve(product.macosInstaller));
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error', message: error.message });
-    }
-});
+router.get("/:productName/macos/installer.dmg", productController.fetchProductMacOSInstaller);
 
 
 module.exports = router;
