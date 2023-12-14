@@ -1,10 +1,10 @@
+//routes/product.js
 const express = require('express');
 const router = express.Router(); // Use express.Router() to create a router
 const checkAuth = require('../middleware/check-auth-admin');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const fs = require('fs');
-const path = require('path');
 const productController = require("../controllers/products/products.controller");
 
 // Function to create directories recursively
