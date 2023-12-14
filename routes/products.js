@@ -108,43 +108,7 @@ router.post('/', checkAuth, productController.createNewProduct);
 
 
 // Update an Existing Product's winInstaller by name
-router.patch('/:productName/installer/windows', checkAuth, uploadWindowsInstaller.single('winInstaller'), async (req, res, next) => {
-    try {
-        // Check if the user is an admin
-        if (req.userData.role !== 'admin') {
-            return res.status(403).json({ error: 'Unauthorized. Only admin users can update installers.' });
-        }
-
-        const productName = req.params.productName;
-
-        // Use case-insensitive search to find the product by name
-        const product = await Product.findOne({ name: new RegExp('^' + productName + '$', 'i') });
-
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
-        // Check if a new windowsInstaller file is uploaded
-        if (req.file) {
-
-            // Update the winInstaller field in the product with the file path
-            product.winInstaller = req.file.path;
-
-            // Save the updated product
-            await product.save();
-
-            return res.status(200).json({
-                message: `Windows installer for ${productName} was successfully updated`,
-                product: product,
-            });
-        }
-
-        return res.status(400).json({ message: 'No windows installer file uploaded' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error', message: error.message });
-    }
-});
+router.patch('/:productName/installer/windows', checkAuth, uploadWindowsInstaller.single('winInstaller'),  productController.updateWindowsInstaller);
 
 
 // Update an Existing Product's macosInstaller by name
