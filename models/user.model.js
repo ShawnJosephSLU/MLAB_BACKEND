@@ -12,7 +12,11 @@ const userSchema = new Schema({
     password: { type: String, required: true },
     country: { type: String },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
-    products_owned: [{ type: Schema.Types.ObjectId, ref: 'Product' }]
+    products_owned: [{
+        product: { type: Schema.Types.ObjectId, ref: 'Product' },
+        serialNumber: { type: String, unique: true }
+    }]
+
 }, { versionKey: false });
 
 const User = mongoose.model('User', userSchema);

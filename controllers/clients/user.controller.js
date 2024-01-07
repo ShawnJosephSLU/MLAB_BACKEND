@@ -15,7 +15,8 @@ exports.registerUser = async (req, res, next) => {
             email: req.body.email,   
             password: hashedPassword,  
             country: req.body.country,   
-            role: 'user'                        
+            role: 'user',
+            products_owned: req.body.products_owned                     
         });
         
         const result = await newUser.save();
